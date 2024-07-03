@@ -4,7 +4,13 @@ import sys
 
 def new_activity():
     name = input("Enter the name of the activity: ")
-    goal = float(input("Enter the goal in hours: "))
+    hours_valid = False
+    while not hours_valid:
+        try:
+            goal = float(input("Enter the goal in hours: "))
+            hours_valid = True
+        except ValueError:
+            print("Invalid input. Please enter a number")
     return name, goal
 
 
@@ -13,35 +19,42 @@ def new_doro(doro):
     print("Let's start by creating a new activity")
     name, goal = new_activity()
     doro.add_activity(name, goal)
+    doro.select_activity(name)
 
 
 def select_activity(doro):
     while True:
         print("1. Start a new activity")
         print("2. Select an activity")
-        print("3. Exit")
+        print("3. Remove an activity")
+        print("4. Exit")
 
         choice = input("Enter your choice: ")
         if choice == "1":
             name, goal = new_activity()
             doro.add_activity(name, goal)
+            doro.select_activity(name)
             break
         elif choice == "2":
             doro.report()
-            name = input("Enter the name of the activity: ")
             valid = False
             while not valid:
+                name = input("Enter the name of the activity: ")
                 valid = doro.select_activity(name)
                 if not valid:
                     print("Activity not found")
             break
         elif choice == "3":
+            doro.report()
+            name = input("Enter the name of the activity: ")
+            doro.remove_activity(name)
+        elif choice == "4":
             doro.save_file("doro.json")
             sys.exit()
         else:
             print("Invalid choice")
 
-def manage_activity(doro):
+def manage_activity(doro):  
     while True:
         print("1. Select an activity")
         print("2. Report")
@@ -50,14 +63,13 @@ def manage_activity(doro):
         print("5. Start timer")
         print("6. Pause timer")
         print("7. Stop Timer")
-        print("8. Select an activity")
-        print("9. Exit")
-        doro
+        print("8. Exit")
+        print("Current activity: ", doro.selected_activity.name)
         choice = input("Enter your choice: ")
         if choice == "1":
             select_activity(doro)
         elif choice == "2":
-            doro.report()
+            doro.report_activity()
         elif choice == "3":
             doro.reset()
         elif choice == "4":
@@ -81,7 +93,8 @@ def main():
     activities_exist = doro.open_file("doro.json")
     if not activities_exist:
         new_doro(doro)
-    select_activity(doro)
+    else:
+        select_activity(doro)
     manage_activity(doro)
 
 
