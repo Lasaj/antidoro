@@ -1,4 +1,5 @@
 import time
+from datetime import timedelta
 
 class Timer():
     def __init__(self):
@@ -38,16 +39,20 @@ class Activity:
     def __init__(self, name, goal):
         self.name = name
         self.goal = goal
-        self.current = 0
+        self.elapsed = 0
         self.isRunning = False
         self.timer = Timer()
 
     def report(self):
-        print(f"Current time spent on {self.name}: {self.current} out of "
+        time_spent = str(timedelta(seconds=self.elapsed))
+        td = timedelta(seconds=self.elapsed)
+        print(f"elapsed time spent on {self.name}: {time_spent} out of "
               f"{self.goal} hours")
+        print(f"Time spent: {td.days} days, {td.seconds // 3600} hours, "
+              f"{(td.seconds // 60) % 60} minutes, {td.seconds % 60} seconds")
     
     def reset(self):
-        self.current = 0
+        self.elapsed = 0
         self.isRunning = False
 
     def change_goal(self, goal):
@@ -61,7 +66,7 @@ class Activity:
 
     def stop_timer(self):
         self.timer.stop()
-        self.current += self.timer.get_elapsed_time()
+        self.elapsed += self.timer.get_elapsed_time()
         self.timer.reset()
     
     def reset_timer(self):

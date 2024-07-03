@@ -23,6 +23,7 @@ class AntiDoro:
     def remove_activity(self, name):
         if name in self.activities:
             del self.activities[name]
+            print("Activity removed")
         else:
             print("Activity not found")
 
@@ -34,27 +35,32 @@ class AntiDoro:
             return False
 
     def report(self):
-        for activity in self.activities.values():
+        for name, activity in self.activities.items():
             activity.report()
 
+    def report_activity(self):
+        self.selected_activity.report()
+
     def reset(self):
-        for activity in self.activities.values():
-            activity.reset()
+        self.selected_activity.reset()
 
-    def change_goal(self, name, goal):
-        self.activities[name].change_goal(goal)
+    def change_goal(self, goal):
+        self.selected_activity.change_goal(goal)
 
-    def start_timer(self, name):
-        self.activities[name].start_timer()
+    def start_timer(self):
+        self.selected_activity.start_timer()
 
-    def pause_timer(self, name):
-        self.activities[name].pause_timer()
+    def pause_timer(self):
+        self.selected_activity.pause_timer()
 
-    def stop_timer(self, name):
-        self.activities[name].stop_timer()
+    def stop_timer(self):
+        self.selected_activity.stop_timer()
 
-    def reset_timer(self, name):
-        self.activities[name].reset_timer()
+    def reset_timer(self):
+        self.selected_activity.reset_timer()
+
+    def get_current_activity(self):
+        return self.selected_activity
 
     def open_file(self, filename):
         if not os.path.exists(filename): 
