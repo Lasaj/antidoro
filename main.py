@@ -24,10 +24,12 @@ def new_doro(doro):
 
 def select_activity(doro):
     while True:
+        print("\nMain Menu:")
         print("1. Start a new activity")
-        print("2. Select an activity")
-        print("3. Remove an activity")
-        print("4. Exit")
+        print("2. List activities")
+        print("3. Select an activity")
+        print("4. Remove an activity")
+        print("5. Exit")
 
         choice = input("Enter your choice: ")
         if choice == "1":
@@ -37,6 +39,8 @@ def select_activity(doro):
             break
         elif choice == "2":
             doro.report()
+        elif choice == "3":
+            doro.report()
             valid = False
             while not valid:
                 name = input("Enter the name of the activity: ")
@@ -44,11 +48,11 @@ def select_activity(doro):
                 if not valid:
                     print("Activity not found")
             break
-        elif choice == "3":
+        elif choice == "4":
             doro.report()
             name = input("Enter the name of the activity: ")
             doro.remove_activity(name)
-        elif choice == "4":
+        elif choice == "5":
             doro.save_file("doro.json")
             sys.exit()
         else:
@@ -56,6 +60,7 @@ def select_activity(doro):
 
 def manage_activity(doro):  
     while True:
+        print("\nActivity Menu:")
         print("1. Select an activity")
         print("2. Report")
         print("3. Reset")
@@ -64,7 +69,12 @@ def manage_activity(doro):
         print("6. Pause timer")
         print("7. Stop Timer")
         print("8. Exit")
-        print("Current activity: ", doro.selected_activity.name)
+        print("Current activity:", doro.selected_activity.name, end='')
+        if doro.selected_activity.is_running():
+            print(" (Running)")
+            doro.report_activity()
+        else:
+            print(": (Not running)")
         choice = input("Enter your choice: ")
         if choice == "1":
             select_activity(doro)
@@ -90,7 +100,10 @@ def manage_activity(doro):
 
 def main():
     doro = AntiDoro()
-    activities_exist = doro.open_file("doro.json")
+    try:
+        activities_exist = doro.open_file("doro.json")
+    except:
+        activities_exist = False
     if not activities_exist:
         new_doro(doro)
     else:
