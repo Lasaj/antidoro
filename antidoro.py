@@ -101,7 +101,6 @@ class AntiDoro:
             json.dump(data, file)
 
     def update_week(self):
-        self.start_date = datetime.date(2021, 1, 3)
         if self.start_date is None:
             self.start_date = self.get_last_sunday()
         else:
