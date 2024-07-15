@@ -2,13 +2,14 @@ import json
 import os
 import datetime
 from activities import Activity
+from history import DoroHistory
 
 class AntiDoro:
     def __init__(self):
         self.activities = {}
         self.selected_activity = None
         self.start_date = None
-        self.history = {}
+        self.history = None
 
     def add_activity(self, name, goal, elapsed=0):
         if name in self.activities:  # Check if activity already exists
@@ -74,14 +75,9 @@ class AntiDoro:
             data = json.load(file)
 
             # Load history
-            history_data = data.get("history", {})
-            if history_data:
-                del data["history"]
-                for record in history_data.items():
-                    for date, activities in history_data.items():
-                        self.history[self.string_to_date(date)] = {}
-                        for name, activity in activities.items():
-                            self.history[self.string_to_date(date)][name] = Activity(activity[0], activity[1])
+            history_data = data.pop("history", {})
+            self.history = DoroHistory(history_data)
+
             
             # Load current activities
             for name, record in data.items():
@@ -99,23 +95,19 @@ class AntiDoro:
             data[name] = [activity.goal, activity.elapsed]
         
         # Save history
-        data["history"] = {}
-        for date, activities in self.history.items():
-            json_date = self.date_to_string(date)
-            data["history"][json_date] = {}
-            for name, activity in activities.items():
-                data["history"][json_date][name] = [activity.goal, activity.elapsed]
+        data["history"] = self.history.save_history()
 
         with open(filename, "w") as file:
             json.dump(data, file)
 
     def update_week(self):
+        self.start_date = datetime.date(2021, 1, 3)
         if self.start_date is None:
             self.start_date = self.get_last_sunday()
         else:
             last_sunday = self.get_last_sunday()
             if last_sunday != self.start_date:  # Update week
-                self.history[self.start_date] = self.activities
+                self.history.record_week(self.start_date, self.activities)
                 self.start_date = last_sunday
                 for name, activity in self.activities.items():
                     activity.reset()
