@@ -9,10 +9,21 @@ class Timer():
         self.elapsed_time = 0
 
     def start(self):
+        if self.isRunning:
+            return
         self.start_time = time.time()
         self.isRunning = True
 
     def stop(self):
+        if not self.isRunning:
+            return
+        self.end_time = time.time()
+        self.elapsed_time += self.end_time - self.start_time
+        self.isRunning = False
+
+    def pause(self):
+        if not self.isRunning:
+            return
         self.end_time = time.time()
         self.elapsed_time += self.end_time - self.start_time
         self.isRunning = False
@@ -42,11 +53,8 @@ class Activity:
         self.elapsed = elapsed
         self.timer = Timer()
 
-    def report(self):
-        time_spent = str(timedelta(seconds=self.elapsed))
+    def report(self): 
         td = timedelta(seconds=(self.elapsed + self.timer.get_elapsed_time()))
-        # print(f"elapsed time spent on {self.name}: {time_spent} out of "
-            #   f"{self.goal} hours")
         print(f"Activity: {self.name}\n"
               f"Time spent: {td.seconds // 3600} hours, "
               f"{(td.seconds // 60) % 60} minutes, {td.seconds % 60} seconds "
@@ -63,8 +71,10 @@ class Activity:
             return
         self.timer.start()
 
+    # TODO: Pause timer does not work
     def pause_timer(self):
-        self.timer.stop()
+        self.timer.pause()
+        self.elapsed += self.timer.get_elapsed_time()
 
     def stop_timer(self):
         self.timer.stop()

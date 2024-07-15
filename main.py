@@ -60,7 +60,8 @@ def select_activity(doro):
 
 def manage_activity(doro):  
     while True:
-        print("\nActivity Menu:")
+        print("\nWeek of", doro.start_date.strftime("%d %b %Y"))
+        print("Activity Menu:")
         print("1. Select an activity")
         print("2. Report")
         print("3. Reset")
@@ -102,8 +103,10 @@ def main():
     doro = AntiDoro()
     try:
         activities_exist = doro.open_file("doro.json")
-    except:
+    except Exception as e:
+        print(e)
         activities_exist = False
+    doro.update_week()
     if not activities_exist:
         new_doro(doro)
     else:
