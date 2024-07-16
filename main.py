@@ -29,7 +29,8 @@ def select_activity(doro):
         print("2. List activities")
         print("3. Select an activity")
         print("4. Remove an activity")
-        print("5. Exit")
+        print("5. Show history")
+        print("6. Exit")
 
         choice = input("Enter your choice: ")
         if choice == "1":
@@ -53,12 +54,14 @@ def select_activity(doro):
             name = input("Enter the name of the activity: ")
             doro.remove_activity(name)
         elif choice == "5":
+            doro.show_history()
+        elif choice == "6":
             doro.save_file("doro.json")
             sys.exit()
         else:
             print("Invalid choice")
 
-def manage_activity(doro):  
+def manage_activity(doro, filename):  
     while True:
         print("\nWeek of", doro.start_date.strftime("%d %b %Y"))
         print("Activity Menu:")
@@ -93,16 +96,18 @@ def manage_activity(doro):
         elif choice == "7":
             doro.stop_timer()
         elif choice == "8":
-            doro.save_file("doro.json")
+            doro.save_file(filename)
             sys.exit()
         else:
             print("Invalid choice")
 
 
-def main():
+def main(filename=None):
+    if not filename:
+        filename="doro.json"
     doro = AntiDoro()
     try:
-        activities_exist = doro.open_file("doro.json")
+        activities_exist = doro.open_file(filename)
     except Exception as e:
         print(e)
         activities_exist = False
@@ -111,8 +116,17 @@ def main():
         new_doro(doro)
     else:
         select_activity(doro)
-    manage_activity(doro)
+    manage_activity(doro, filename=filename)
 
 
 if __name__ == "__main__":
-    main()
+    print(f"Arguments count: {len(sys.argv)}")
+    for i, arg in enumerate(sys.argv):
+        print(f"Argument {i:>6}: {arg}")
+
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        filename = None
+
+    main(filename)

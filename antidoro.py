@@ -66,6 +66,9 @@ class AntiDoro:
     def get_current_activity(self):
         return self.selected_activity
 
+    def show_history(self):
+        self.history.show_history()
+
     def open_file(self, filename):
         if not os.path.exists(filename): 
             with open(filename, "w") as file:

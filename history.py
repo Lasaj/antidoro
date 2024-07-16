@@ -6,6 +6,8 @@ class DoroHistory():
     def __init__(self, history_data = None):
         self.history_data = history_data
         self.history = {}
+        if self.history_data:
+            self.load_history()
 
     def load_history(self):
         if self.history_data:
@@ -26,6 +28,11 @@ class DoroHistory():
 
     def record_week(self, start_date, activities):
         self.history[start_date] = activities
+
+    # TODO: show history
+    def show_history(self):
+        for i, date in enumerate(self.history.items()):
+            print(i, date)
 
     ### Helper functions ###
     def date_to_string(self, date):

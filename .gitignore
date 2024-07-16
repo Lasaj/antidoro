@@ -1,3 +1,3 @@
-doro.json
+*.json
 .vscode/settings.json
 __pycache__/
