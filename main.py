@@ -96,6 +96,7 @@ def manage_activity(doro, filename):
         elif choice == "7":
             doro.stop_timer()
         elif choice == "8":
+            doro.stop_timer()
             doro.save_file(filename)
             sys.exit()
         else:
